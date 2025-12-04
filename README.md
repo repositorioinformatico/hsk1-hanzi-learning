@@ -109,8 +109,8 @@ La aplicación utiliza **tonos numéricos** para el pinyin:
 
 ```bash
 # Clonar el repositorio
-git clone <tu-repositorio>
-cd jp-main
+git clone https://github.com/repositorioinformatico/hsk1-hanzi-learning.git
+cd hsk1-hanzi-learning
 
 # Instalar dependencias
 npm install
