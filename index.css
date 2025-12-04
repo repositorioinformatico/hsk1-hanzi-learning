@@ -1,0 +1,982 @@
+:root {
+  --primary-color: #6200ee;
+  --primary-light: #bb86fc;
+  --primary-dark: #3700b3;
+  --secondary-color: #03dac6;
+  --success-color: #00c853;
+  --error-color: #ff3d00;
+  --background-color: #f5f5f5;
+  --surface-color: #ffffff;
+  --text-primary: #212121;
+  --text-secondary: #757575;
+  --border-color: #e0e0e0;
+  --shadow-color: rgba(0, 0, 0, 0.12);
+  --transition-speed: 0.2s;
+  --card-radius: 16px;
+  --button-radius: 28px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Poppins", "Noto Sans SC", sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-primary);
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.6;
+}
+
+.container {
+  padding: 20px;
+  width: 95%;
+  max-width: 1200px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-title {
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  color: var(--primary-color);
+  background-color: rgba(255, 255, 255, 0.95);
+  padding: 10px 24px;
+  border-radius: var(--button-radius);
+  box-shadow: 0 8px 20px rgba(98, 0, 238, 0.15);
+  z-index: 1000;
+  font-weight: 700;
+  letter-spacing: 1px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 20px;
+}
+
+.hiragana-area {
+  border: none;
+  border-radius: var(--card-radius);
+  padding: 20px;
+  width: 100%;
+  height: 100%;
+  background-color: var(--surface-color);
+  box-shadow: 0 12px 30px var(--shadow-color);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-content: flex-start;
+  justify-content: center;
+  position: relative;
+  overflow: auto;
+  flex: 1;
+}
+
+.hiragana-area::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 8px;
+  background: linear-gradient(90deg, var(--primary-light), var(--secondary-color));
+}
+
+.hiragana-card {
+  width: 120px;
+  height: 170px;
+  border: none;
+  border-radius: var(--card-radius);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--surface-color);
+  transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  position: relative;
+  cursor: text;
+}
+
+.hiragana-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+}
+
+.hiragana-card:focus-within {
+  box-shadow: 0 0 0 3px rgba(187, 134, 252, 0.25), 0 12px 24px rgba(0, 0, 0, 0.12);
+  transform: translateY(-5px);
+}
+
+.hiragana-display {
+  width: 100%;
+  height: 110px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+  background-color: rgba(98, 0, 238, 0.05);
+  font-family: "Noto Sans SC", sans-serif;
+  gap: 4px;
+  padding: 8px;
+}
+
+.hanzi-char {
+  font-size: 48px;
+  font-weight: 500;
+  color: var(--primary-dark);
+  line-height: 1;
+}
+
+.meaning-text {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  text-align: center;
+  font-family: "Poppins", sans-serif;
+  line-height: 1.2;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.input-container {
+  width: 100%;
+  min-height: 60px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.tone-reference-small {
+  font-size: 0.55rem;
+  color: var(--text-secondary);
+  text-align: center;
+  font-family: "Noto Sans SC", sans-serif;
+  opacity: 0.7;
+  line-height: 1;
+  margin-top: 2px;
+}
+
+.romaji-input {
+  width: 100%;
+  height: 100%;
+  padding: 8px 10px;
+  text-align: center;
+  border: none;
+  border-radius: 0;
+  font-size: 14px;
+  font-family: "Poppins", sans-serif;
+  transition: all var(--transition-speed) ease;
+  outline: none;
+  background-color: transparent;
+}
+
+.romaji-answer {
+  width: 100%;
+  height: 100%;
+  padding: 8px 10px;
+  text-align: center;
+  font-size: 14px;
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  color: var(--success-color);
+}
+
+.correct {
+  border-color: var(--success-color);
+  background: rgba(0, 200, 83, 0.25);
+  animation: correctPulse 0.5s ease;
+  box-shadow: 0 8px 16px rgba(0, 200, 83, 0.25);
+}
+
+.incorrect {
+  border-color: var(--error-color);
+  background: rgba(255, 61, 0, 0.25);
+}
+
+.reset-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 12px 24px;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: var(--button-radius);
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  box-shadow: 0 8px 16px rgba(98, 0, 238, 0.3);
+  transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.reset-button:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 12px 20px rgba(98, 0, 238, 0.4);
+}
+
+.reset-button:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.win-message {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(135deg, var(--success-color), #64dd17);
+  color: white;
+  padding: 30px 60px;
+  border-radius: var(--card-radius);
+  box-shadow: 0 16px 32px rgba(0, 200, 83, 0.3);
+  font-size: 32px;
+  z-index: 2000;
+  animation: bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-align: center;
+}
+
+.tabs-container {
+  width: 100%;
+  text-align: center;
+}
+
+.tabs {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.tab-button {
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: white;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+  min-width: 140px;
+}
+
+.tab-spanish {
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: "Poppins", sans-serif;
+}
+
+.tab-hanzi {
+  font-size: 0.85rem;
+  font-weight: 500;
+  font-family: "Noto Sans SC", sans-serif;
+  color: #666;
+}
+
+.tab-button.active {
+  background: #4caf50;
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.tab-button.active .tab-spanish,
+.tab-button.active .tab-hanzi {
+  color: white;
+}
+
+.tab-button:hover:not(.active) {
+  background: #e0e0e0;
+}
+
+.score-display {
+  display: inline-block;
+  background-color: rgba(255, 255, 255, 0.95);
+  padding: 8px 20px;
+  border-radius: var(--button-radius);
+  box-shadow: 0 8px 16px var(--shadow-color);
+  font-size: 16px;
+  color: var(--text-primary);
+  transition: all var(--transition-speed) ease;
+  backdrop-filter: blur(10px);
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  letter-spacing: 0.5px;
+}
+
+@keyframes correctPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes bounceIn {
+  0% {
+    transform: translate(-50%, -50%) scale(0.5);
+    opacity: 0;
+  }
+  60% {
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+  80% {
+    transform: translate(-50%, -50%) scale(0.95);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes scoreUpdate {
+  0% { transform: translateX(-50%) scale(1); }
+  50% { transform: translateX(-50%) scale(1.2); }
+  100% { transform: translateX(-50%) scale(1); }
+}
+
+@media (max-width: 1024px) {
+  .container {
+    width: 100%;
+    padding: 15px;
+  }
+  .hiragana-card {
+    width: 110px;
+    height: 160px;
+  }
+  .hiragana-display {
+    height: 100px;
+  }
+  .hanzi-char {
+    font-size: 44px;
+  }
+  .meaning-text {
+    font-size: 11px;
+  }
+  .page-title {
+    font-size: 18px;
+    padding: 10px 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .hiragana-area {
+    padding: 15px;
+    gap: 10px;
+  }
+  .hiragana-card {
+    width: 95px;
+    height: 145px;
+  }
+  .hiragana-display {
+    height: 90px;
+  }
+  .hanzi-char {
+    font-size: 40px;
+  }
+  .meaning-text {
+    font-size: 10px;
+  }
+  .input-container {
+    padding: 6px;
+  }
+  .page-title {
+    width: 90%;
+    text-align: center;
+    font-size: 16px;
+  }
+  .tabs {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .tab-button {
+    padding: 0.6rem 1rem;
+    min-width: 120px;
+  }
+  .tab-spanish {
+    font-size: 0.85rem;
+  }
+  .tab-hanzi {
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .hiragana-card {
+    width: 85px;
+    height: 130px;
+  }
+  .hiragana-display {
+    height: 80px;
+  }
+  .hanzi-char {
+    font-size: 36px;
+  }
+  .meaning-text {
+    font-size: 9px;
+  }
+  .romaji-input {
+    font-size: 12px;
+    padding: 6px 8px;
+  }
+  .page-title {
+    font-size: 14px;
+    padding: 8px 16px;
+  }
+  .score-display {
+    font-size: 14px;
+    padding: 8px 16px;
+    top: 50px;
+  }
+  .reset-button {
+    padding: 10px 20px;
+    font-size: 14px;
+    right: 15px;
+    bottom: 15px;
+  }
+  .win-message {
+    font-size: 24px;
+    padding: 24px 40px;
+  }
+  .tab-button {
+    padding: 0.5rem 0.8rem;
+    min-width: 100px;
+  }
+  .tab-spanish {
+    font-size: 0.75rem;
+  }
+  .tab-hanzi {
+    font-size: 0.65rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .hiragana-card {
+    width: 75px;
+    height: 120px;
+  }
+  .hiragana-display {
+    height: 75px;
+  }
+  .hanzi-char {
+    font-size: 32px;
+  }
+  .meaning-text {
+    font-size: 8px;
+  }
+  .romaji-input {
+    font-size: 11px;
+    padding: 4px 6px;
+  }
+  .tab-button {
+    padding: 0.4rem 0.6rem;
+    min-width: 85px;
+  }
+  .tab-spanish {
+    font-size: 0.7rem;
+  }
+  .tab-hanzi {
+    font-size: 0.6rem;
+  }
+}
+
+/* Flashcard Mode Styles */
+.flashcard-container {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+}
+
+.flashcard-header {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+.flashcard-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  font-size: 1.4rem;
+  color: var(--primary-color);
+  font-weight: 700;
+}
+
+.flashcard-title-hanzi {
+  font-size: 1rem;
+  font-family: "Noto Sans SC", sans-serif;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.flashcard-mode-toggle {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin: 10px 0;
+}
+
+.mode-toggle-button {
+  padding: 10px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  border: 2px solid var(--border-color);
+  border-radius: var(--button-radius);
+  cursor: pointer;
+  transition: all var(--transition-speed) ease;
+  background-color: var(--surface-color);
+  color: var(--text-primary);
+  font-family: "Poppins", sans-serif;
+}
+
+.mode-toggle-button:hover {
+  border-color: var(--primary-color);
+  transform: translateY(-2px);
+}
+
+.mode-toggle-button.active {
+  background-color: var(--secondary-color);
+  color: white;
+  border-color: var(--secondary-color);
+}
+
+.flashcard-category-selector {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin: 10px 0;
+}
+
+.category-button {
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: 2px solid var(--border-color);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all var(--transition-speed) ease;
+  background-color: var(--surface-color);
+  color: var(--text-primary);
+  font-family: "Poppins", sans-serif;
+  white-space: nowrap;
+}
+
+.category-button:hover {
+  border-color: var(--primary-color);
+  background-color: rgba(98, 0, 238, 0.05);
+  transform: translateY(-2px);
+}
+
+.category-button.active {
+  background-color: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+  box-shadow: 0 4px 12px rgba(98, 0, 238, 0.3);
+}
+
+.flashcard-progress {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  background-color: rgba(255, 255, 255, 0.95);
+  padding: 8px 20px;
+  border-radius: var(--button-radius);
+  box-shadow: 0 4px 12px var(--shadow-color);
+}
+
+.flashcard-card {
+  width: 100%;
+  background-color: var(--surface-color);
+  border-radius: var(--card-radius);
+  box-shadow: 0 12px 30px var(--shadow-color);
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  transition: all var(--transition-speed) ease;
+}
+
+.flashcard-card.correct {
+  border: 3px solid var(--success-color);
+  background: rgba(0, 200, 83, 0.05);
+  animation: correctPulse 0.5s ease;
+}
+
+.flashcard-card.incorrect {
+  border: 3px solid var(--error-color);
+  background: rgba(255, 61, 0, 0.05);
+}
+
+.flashcard-hanzi-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  padding: 20px 0;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.flashcard-hanzi {
+  font-size: 80px;
+  font-family: "Noto Sans SC", sans-serif;
+  font-weight: 500;
+  color: var(--primary-dark);
+  line-height: 1;
+}
+
+.flashcard-meaning {
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  text-align: center;
+}
+
+.flashcard-input-section {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: center;
+}
+
+.flashcard-solution-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 12px;
+  background: linear-gradient(135deg, rgba(3, 218, 198, 0.1), rgba(98, 0, 238, 0.1));
+  border-radius: 12px;
+  margin-bottom: 10px;
+  border: 2px dashed var(--secondary-color);
+}
+
+.solution-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.solution-pinyin {
+  font-size: 1.8rem;
+  color: var(--secondary-color);
+  font-weight: 700;
+  font-family: "Poppins", sans-serif;
+  letter-spacing: 2px;
+}
+
+.solution-instruction {
+  font-size: 0.75rem;
+  color: var(--primary-color);
+  font-weight: 600;
+  margin-top: 3px;
+}
+
+.flashcard-hint-container {
+  min-height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flashcard-hint {
+  font-size: 1.2rem;
+  color: var(--primary-color);
+  font-weight: 600;
+  padding: 8px 16px;
+  background-color: rgba(98, 0, 238, 0.1);
+  border-radius: 8px;
+}
+
+.hint-text {
+  font-family: "Poppins", sans-serif;
+  color: var(--primary-dark);
+  letter-spacing: 2px;
+}
+
+.hint-dots {
+  color: var(--text-secondary);
+}
+
+.flashcard-input {
+  width: 100%;
+  max-width: 400px;
+  padding: 15px 20px;
+  font-size: 1.5rem;
+  text-align: center;
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  font-family: "Poppins", sans-serif;
+  transition: all var(--transition-speed) ease;
+  outline: none;
+}
+
+.flashcard-input:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(98, 0, 238, 0.1);
+}
+
+.flashcard-input:disabled {
+  background-color: var(--background-color);
+  cursor: not-allowed;
+}
+
+.tone-reference {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-align: center;
+  margin-top: 8px;
+  font-family: "Noto Sans SC", "Poppins", sans-serif;
+  opacity: 0.8;
+}
+
+.tone-example {
+  font-family: "Noto Sans SC", sans-serif;
+  font-weight: 500;
+  color: var(--primary-color);
+  margin: 0 4px;
+}
+
+.flashcard-buttons {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.hint-button, .check-button {
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--button-radius);
+  cursor: pointer;
+  transition: all var(--transition-speed) ease;
+  font-family: "Poppins", sans-serif;
+}
+
+.hint-button {
+  background-color: var(--secondary-color);
+  color: var(--text-primary);
+}
+
+.hint-button:hover:not(:disabled) {
+  background-color: #02c4b0;
+  transform: translateY(-2px);
+}
+
+.hint-button:disabled {
+  background-color: var(--border-color);
+  color: var(--text-secondary);
+  cursor: not-allowed;
+}
+
+.check-button {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.check-button:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
+}
+
+.flashcard-answer-correct {
+  font-size: 2rem;
+  color: var(--success-color);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: "Poppins", sans-serif;
+}
+
+.checkmark {
+  font-size: 2.5rem;
+}
+
+.flashcard-error {
+  font-size: 1.1rem;
+  color: var(--error-color);
+  font-weight: 600;
+  padding: 12px 20px;
+  background-color: rgba(255, 61, 0, 0.1);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.flashcard-navigation {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+}
+
+.nav-button {
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--button-radius);
+  cursor: pointer;
+  transition: all var(--transition-speed) ease;
+  background-color: var(--surface-color);
+  color: var(--text-primary);
+  border: 2px solid var(--border-color);
+  font-family: "Poppins", sans-serif;
+}
+
+.nav-button:hover:not(:disabled) {
+  background-color: var(--background-color);
+  transform: translateY(-2px);
+  border-color: var(--primary-color);
+}
+
+.nav-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.next-button {
+  background-color: var(--success-color);
+  color: white;
+  border-color: var(--success-color);
+}
+
+.next-button:hover {
+  background-color: #00a845;
+  border-color: #00a845;
+}
+
+.reset-flashcard-button {
+  background-color: var(--error-color);
+  color: white;
+  border-color: var(--error-color);
+}
+
+.reset-flashcard-button:hover {
+  background-color: #e63600;
+  border-color: #e63600;
+}
+
+/* Responsive styles for flashcards */
+@media (max-width: 768px) {
+  .flashcard-container {
+    padding: 15px;
+  }
+  .flashcard-card {
+    padding: 30px 20px;
+  }
+  .flashcard-hanzi {
+    font-size: 90px;
+  }
+  .flashcard-meaning {
+    font-size: 1.2rem;
+  }
+  .flashcard-input {
+    font-size: 1.2rem;
+  }
+  .solution-pinyin {
+    font-size: 2rem;
+  }
+  .mode-toggle-button {
+    font-size: 0.9rem;
+    padding: 8px 20px;
+  }
+  .category-button {
+    font-size: 0.85rem;
+    padding: 7px 14px;
+  }
+}
+
+@media (max-width: 600px) {
+  .flashcard-hanzi {
+    font-size: 70px;
+  }
+  .flashcard-meaning {
+    font-size: 1rem;
+  }
+  .flashcard-title {
+    font-size: 1.5rem;
+  }
+  .flashcard-buttons {
+    flex-direction: column;
+    width: 100%;
+  }
+  .hint-button, .check-button {
+    width: 100%;
+  }
+  .solution-pinyin {
+    font-size: 1.8rem;
+  }
+  .mode-toggle-button {
+    font-size: 0.85rem;
+    padding: 8px 16px;
+  }
+  .category-button {
+    font-size: 0.8rem;
+    padding: 6px 12px;
+  }
+  .tone-reference {
+    font-size: 0.7rem;
+  }
+  .tone-reference-small {
+    font-size: 0.5rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .flashcard-hanzi {
+    font-size: 60px;
+  }
+  .flashcard-card {
+    padding: 20px 15px;
+  }
+  .flashcard-navigation {
+    flex-direction: column;
+  }
+  .nav-button {
+    width: 100%;
+  }
+}

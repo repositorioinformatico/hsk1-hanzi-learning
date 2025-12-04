@@ -1,0 +1,44 @@
+{
+  "name": "hsk1-hanzi-learning",
+  "version": "2.0.0",
+  "description": "Aplicación web interactiva para aprender los 141 caracteres chinos del HSK1 con pinyin, tonos y significados en español. Adaptado del proyecto jp de plh97.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/repositorioinformatico/hsk1-hanzi-learning.git"
+  },
+  "keywords": [
+    "hsk1",
+    "chinese",
+    "hanzi",
+    "pinyin",
+    "learning",
+    "flashcards",
+    "chinese-characters",
+    "mandarin",
+    "study",
+    "education",
+    "tones",
+    "español"
+  ],
+  "author": "repositorioinformatico",
+  "license": "ISC",
+  "originalProject": {
+    "name": "jp - 練習平假名",
+    "author": "plh97",
+    "url": "https://github.com/plh97/jp"
+  },
+  "bugs": {
+    "url": "https://github.com/repositorioinformatico/hsk1-hanzi-learning/issues"
+  },
+  "homepage": "https://github.com/repositorioinformatico/hsk1-hanzi-learning#readme",
+  "dependencies": {
+    "vite": "^6.2.1"
+  }
+}
