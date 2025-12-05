@@ -1,4 +1,5 @@
-const { useState, useEffect, useRef } = React;
+import React, { useState, useEffect, useRef } from 'react';
+import ReactDOM from 'react-dom/client';
 
 // HSK1 Character Data Models - Organized by thematic categories
 const numerosBasicosData = {

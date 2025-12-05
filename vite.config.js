@@ -10,9 +10,4 @@ export default defineConfig({
     assetsDir: 'assets',
     sourcemap: false,
   },
-  esbuild: {
-    loader: 'jsx',
-    include: /src\/.*\.jsx?$/,
-    exclude: [],
-  },
 })

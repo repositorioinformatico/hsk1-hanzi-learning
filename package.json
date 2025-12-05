@@ -39,6 +39,8 @@
   },
   "homepage": "https://github.com/repositorioinformatico/hsk1-hanzi-learning#readme",
   "dependencies": {
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1",
     "vite": "^6.2.1"
   },
   "devDependencies": {
