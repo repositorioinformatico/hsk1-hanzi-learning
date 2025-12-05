@@ -40,5 +40,8 @@
   "homepage": "https://github.com/repositorioinformatico/hsk1-hanzi-learning#readme",
   "dependencies": {
     "vite": "^6.2.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^5.1.1"
   }
 }
