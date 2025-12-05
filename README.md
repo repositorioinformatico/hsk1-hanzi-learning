@@ -2,6 +2,8 @@
 
 Una aplicación web interactiva y gratuita para aprender los 150 caracteres chinos del nivel HSK1 con pinyin y significados en español.
 
+**🌐 [Probar la aplicación en línea](https://repositorioinformatico.github.io/hsk1-hanzi-learning/)**
+
 ---
 
 ## 🙏 Créditos y Reconocimiento
@@ -176,6 +178,7 @@ Este proyecto es de código abierto y está disponible gratuitamente para fines 
 
 ## 🙏 Agradecimientos
 
+- **[@plh97](https://github.com/plh97)** - Creador del proyecto original [jp - 練習平假名](https://github.com/plh97/jp). Sin su trabajo inicial de aprendizaje de Hiragana/Katakana, este repositorio no existiría o sería totalmente diferente. Toda la estructura, diseño y lógica de la aplicación están basados en su excelente trabajo.
 - Datos de caracteres basados en el vocabulario oficial del HSK1
 - Tipografía: Google Fonts (Noto Sans SC, Poppins)
 - Framework: React y Vite
