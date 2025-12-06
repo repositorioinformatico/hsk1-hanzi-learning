@@ -44,33 +44,6 @@ body {
   flex-direction: column;
 }
 
-.site-logo {
-  position: fixed;
-  top: 15px;
-  left: 20px;
-  z-index: 1000;
-  color: var(--primary-color);
-  background-color: rgba(255, 255, 255, 0.95);
-  padding: 12px 20px;
-  border-radius: var(--button-radius);
-  box-shadow: 0 4px 12px rgba(98, 0, 238, 0.15);
-  font-weight: 700;
-  font-size: 1rem;
-  text-decoration: none;
-  transition: all var(--transition-speed) ease;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 2px solid var(--primary-color);
-  cursor: pointer;
-}
-
-.site-logo:hover {
-  background-color: var(--primary-color);
-  color: white;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(98, 0, 238, 0.25);
-}
-
 .page-title {
   position: fixed;
   top: 10px;
@@ -413,10 +386,6 @@ body {
     font-size: 18px;
     padding: 10px 20px;
   }
-  .site-logo {
-    font-size: 0.9rem;
-    padding: 10px 16px;
-  }
 }
 
 @media (max-width: 768px) {
@@ -482,12 +451,6 @@ body {
   .page-title {
     font-size: 14px;
     padding: 8px 16px;
-  }
-  .site-logo {
-    font-size: 0.8rem;
-    padding: 8px 12px;
-    top: 10px;
-    left: 10px;
   }
   .score-display {
     font-size: 14px;

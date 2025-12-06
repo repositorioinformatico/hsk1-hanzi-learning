@@ -696,7 +696,6 @@ const App = () => {
 
     return (
         <>
-            <a href="/" className="site-logo">Vamos con HSK1</a>
             <Tabs
                 activeTab={characterSet}
                 onTabChange={handleCharacterSetChange}
