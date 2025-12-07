@@ -639,9 +639,10 @@ const TypingMode = ({ allCharacters }) => {
                 {characters.map((char, index) => (
                     <div key={index} className={`typing-char ${getCharStatus(index)}`}>
                         <div className="typing-hanzi">{char.hanzi}</div>
-                        <div className="typing-pinyin">
-                            {index === currentIndex ? inputValue : (index < currentIndex ? char.pinyin : '')}
-                        </div>
+                        <div className="typing-pinyin-target">{char.pinyin}</div>
+                        {index === currentIndex && (
+                            <div className="typing-user-input">{inputValue}</div>
+                        )}
                     </div>
                 ))}
             </div>
