@@ -1085,6 +1085,17 @@ body {
   line-height: 1;
 }
 
+.typing-meaning {
+  font-size: 0.85rem;
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  color: var(--text-secondary);
+  text-align: center;
+  margin-top: 4px;
+  opacity: 0.65;
+  font-style: italic;
+}
+
 .typing-pinyin-target {
   font-size: 1rem;
   font-family: "Poppins", sans-serif;
