@@ -539,11 +539,148 @@ const FlashcardMode = ({ allCharacters }) => {
     );
 };
 
+// Typing Mode Component (MonkeyType style)
+const TypingMode = ({ allCharacters }) => {
+    const [characters, setCharacters] = useState([]);
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [inputValue, setInputValue] = useState('');
+    const [completedCount, setCompletedCount] = useState(0);
+    const [errors, setErrors] = useState(0);
+    const inputRef = useRef(null);
+
+    useEffect(() => {
+        // Shuffle and select random characters
+        const shuffled = [...allCharacters].sort(() => Math.random() - 0.5).slice(0, 20);
+        setCharacters(shuffled);
+        setCurrentIndex(0);
+        setCompletedCount(0);
+        setErrors(0);
+        setInputValue('');
+    }, []);
+
+    useEffect(() => {
+        if (inputRef.current) {
+            inputRef.current.focus();
+        }
+    }, [currentIndex]);
+
+    const handleInputChange = (e) => {
+        const value = e.target.value.toLowerCase();
+        setInputValue(value);
+
+        if (characters.length === 0 || currentIndex >= characters.length) return;
+
+        const correctPinyin = characters[currentIndex].pinyin.toLowerCase();
+
+        // Check if completed correctly
+        if (value === correctPinyin) {
+            // Correct! Move to next
+            setCompletedCount(prev => prev + 1);
+            setInputValue('');
+
+            if (currentIndex < characters.length - 1) {
+                setCurrentIndex(prev => prev + 1);
+            } else {
+                // Finished all characters
+                setTimeout(() => {
+                    const shuffled = [...allCharacters].sort(() => Math.random() - 0.5).slice(0, 20);
+                    setCharacters(shuffled);
+                    setCurrentIndex(0);
+                    setCompletedCount(0);
+                    setErrors(0);
+                }, 1000);
+            }
+        } else if (value.length > correctPinyin.length) {
+            // Typed too much - it's wrong
+            setErrors(prev => prev + 1);
+            setInputValue('');
+        }
+    };
+
+    const handleKeyDown = (e) => {
+        if (e.key === 'Escape') {
+            // Reset
+            const shuffled = [...allCharacters].sort(() => Math.random() - 0.5).slice(0, 20);
+            setCharacters(shuffled);
+            setCurrentIndex(0);
+            setCompletedCount(0);
+            setErrors(0);
+            setInputValue('');
+        }
+    };
+
+    const getCharStatus = (index) => {
+        if (index < currentIndex) return 'completed';
+        if (index === currentIndex) return 'current';
+        return 'pending';
+    };
+
+    const isInputCorrect = () => {
+        if (!inputValue || characters.length === 0) return null;
+        const correctPinyin = characters[currentIndex].pinyin.toLowerCase();
+        return correctPinyin.startsWith(inputValue);
+    };
+
+    return (
+        <div className="typing-container">
+            <div className="typing-header">
+                <h2 className="typing-title">
+                    <span>Teclea Seguido</span>
+                    <span className="typing-title-hanzi">打字练习</span>
+                </h2>
+                <div className="typing-stats">
+                    <span className="stat">Completados: {completedCount}</span>
+                    <span className="stat">Errores: {errors}</span>
+                    <span className="stat">Precisión: {completedCount > 0 ? Math.round((completedCount / (completedCount + errors)) * 100) : 100}%</span>
+                </div>
+            </div>
+
+            <div className="typing-characters">
+                {characters.map((char, index) => (
+                    <div key={index} className={`typing-char ${getCharStatus(index)}`}>
+                        <div className="typing-hanzi">{char.hanzi}</div>
+                        <div className="typing-pinyin">
+                            {index === currentIndex ? inputValue : (index < currentIndex ? char.pinyin : '')}
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+            <div className="typing-input-section">
+                <input
+                    ref={inputRef}
+                    type="text"
+                    className={`typing-input ${isInputCorrect() === false ? 'error' : ''}`}
+                    value={inputValue}
+                    onChange={handleInputChange}
+                    onKeyDown={handleKeyDown}
+                    placeholder="Escribe el pinyin..."
+                    autoComplete="off"
+                    spellCheck="false"
+                />
+                <div className="typing-hint">
+                    Presiona <kbd>ESC</kbd> para reiniciar
+                </div>
+                <div className="tone-reference">
+                    Tonos: <span className="tone-example">mā(1)</span> <span className="tone-example">má(2)</span> <span className="tone-example">mǎ(3)</span> <span className="tone-example">mà(4)</span> <span className="tone-example">ma(5)</span>
+                </div>
+            </div>
+        </div>
+    );
+};
+
 // Tabs Component
 const Tabs = ({ activeTab, onTabChange, score, total, showScore = true }) => {
     return (
         <div className="tabs-container">
             <div className="tabs">
+                <button
+                    className={`tab-button ${activeTab === 'typing' ? 'active' : ''}`}
+                    onClick={() => onTabChange('typing')}
+                >
+                    <span className="tab-spanish">Teclea Seguido</span>
+                    <span className="tab-hanzi">打字练习</span>
+                </button>
                 <button
                     className={`tab-button ${activeTab === 'flashcards' ? 'active' : ''}`}
                     onClick={() => onTabChange('flashcards')}
@@ -701,9 +838,11 @@ const App = () => {
                 onTabChange={handleCharacterSetChange}
                 score={correctAnswers}
                 total={totalQuestions}
-                showScore={characterSet !== 'flashcards'}
+                showScore={characterSet !== 'flashcards' && characterSet !== 'typing'}
             />
-            {characterSet === 'flashcards' ? (
+            {characterSet === 'typing' ? (
+                <TypingMode allCharacters={getAllCharacters()} />
+            ) : characterSet === 'flashcards' ? (
                 <FlashcardMode allCharacters={getAllCharacters()} />
             ) : (
                 <>
