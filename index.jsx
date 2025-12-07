@@ -633,6 +633,9 @@ const TypingMode = ({ allCharacters }) => {
                     <span className="stat">Errores: {errors}</span>
                     <span className="stat">Precisión: {completedCount > 0 ? Math.round((completedCount / (completedCount + errors)) * 100) : 100}%</span>
                 </div>
+                <div className="tone-reference">
+                    Tonos: <span className="tone-example">mā(1)</span> <span className="tone-example">má(2)</span> <span className="tone-example">mǎ(3)</span> <span className="tone-example">mà(4)</span> <span className="tone-example">ma(5)</span>
+                </div>
             </div>
 
             <div className="typing-characters">
@@ -662,9 +665,6 @@ const TypingMode = ({ allCharacters }) => {
                 />
                 <div className="typing-hint">
                     Presiona <kbd>ESC</kbd> para reiniciar
-                </div>
-                <div className="tone-reference">
-                    Tonos: <span className="tone-example">mā(1)</span> <span className="tone-example">má(2)</span> <span className="tone-example">mǎ(3)</span> <span className="tone-example">mà(4)</span> <span className="tone-example">ma(5)</span>
                 </div>
             </div>
         </div>
