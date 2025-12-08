@@ -163,6 +163,39 @@ const sustantivosTiempoData = {
     ]
 };
 
+const frasesHechasIData = {
+    characters: [
+        // 🗣️ Frases básicas de comunicación
+        { hanzi: '你好', pinyin: 'ni3 hao3', meaning: 'Hola' },
+        { hanzi: '谢谢', pinyin: 'xie4xie5', meaning: 'Gracias' },
+        { hanzi: '非常谢谢', pinyin: 'fei1chang2 xie4xie5', meaning: 'Muchas gracias' },
+        { hanzi: '不客气', pinyin: 'bu2 ke4qi5', meaning: 'De nada' },
+        { hanzi: '对不起', pinyin: 'dui4bu5qi3', meaning: 'Perdón / Disculpe' },
+        { hanzi: '没关系', pinyin: 'mei2 guan1xi5', meaning: 'No hay problema' },
+        { hanzi: '对', pinyin: 'dui4', meaning: 'Sí / Correcto' },
+        { hanzi: '不', pinyin: 'bu4', meaning: 'No' },
+        { hanzi: '好', pinyin: 'hao3', meaning: 'Bueno / Está bien / Ok' },
+
+        // 🛍️ Para comprar y pedir cosas
+        { hanzi: '多少钱？', pinyin: 'duo1 shao3 qian2?', meaning: '¿Cuánto cuesta?' },
+        { hanzi: '这个，请。', pinyin: 'zhe4ge5, qing3.', meaning: 'Esto, por favor' },
+        { hanzi: '可以便宜一点吗？', pinyin: 'ke3yi3 pian2yi5 yi1dian3 ma5?', meaning: '¿Puede ser más barato?' },
+        { hanzi: '我要这个', pinyin: 'wo3 yao4 zhe4ge5', meaning: 'Quiero esto' },
+        { hanzi: '不要', pinyin: 'bu2 yao4', meaning: 'No quiero' },
+        { hanzi: '没有', pinyin: 'mei2you3', meaning: 'No tengo' },
+
+        // 🚕 Para moverse y orientarse
+        { hanzi: '…在哪里？', pinyin: '...zai4 na3li3?', meaning: '¿Dónde está...?' },
+        { hanzi: '我要去…', pinyin: 'wo3 yao4 qu4...', meaning: 'Quiero ir al...' },
+
+        // 📸 Para interactuar con personas
+        { hanzi: '请帮我拍照', pinyin: 'qing3 bang1 wo3 pai1zhao4', meaning: '¿Puedes ayudarme a sacar una foto?' },
+        { hanzi: '你会说英语吗？', pinyin: 'ni3 hui4 shuo1 ying1yu3 ma5?', meaning: '¿Hablas inglés?' },
+        { hanzi: '再见', pinyin: 'zai4jian4', meaning: 'Adiós' },
+        { hanzi: '拜拜', pinyin: 'bai1bai1', meaning: 'Adiós (informal)' }
+    ]
+};
+
 // Utility functions
 const createCharacterToPinyinMap = (data) => {
     const map = new Map();
@@ -179,6 +212,30 @@ const shuffleArray = (array) => {
         [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
     return shuffled;
+};
+
+// Convert pinyin to tone emojis
+const pinyinToToneEmojis = (pinyin) => {
+    const toneMap = {
+        '1': '➖',
+        '2': '↗️',
+        '3': '🔁',
+        '4': '↘️',
+        '5': '·'  // neutral tone
+    };
+
+    // Split by spaces and extract tone numbers
+    const syllables = pinyin.split(/\s+/);
+    const toneEmojis = syllables.map(syllable => {
+        // Find the tone number (1-5) in the syllable
+        const toneMatch = syllable.match(/[1-5]/);
+        if (toneMatch) {
+            return toneMap[toneMatch[0]] || '';
+        }
+        return ''; // No tone found
+    }).filter(emoji => emoji !== '');
+
+    return toneEmojis.join(' ');
 };
 
 // Character Card Component
@@ -546,17 +603,38 @@ const TypingMode = ({ allCharacters }) => {
     const [inputValue, setInputValue] = useState('');
     const [completedCount, setCompletedCount] = useState(0);
     const [errors, setErrors] = useState(0);
+    const [selectedCategory, setSelectedCategory] = useState('all');
     const inputRef = useRef(null);
 
+    // Get characters by category
+    const getCharactersByCategory = (category) => {
+        switch (category) {
+            case 'numeros':
+                return numerosBasicosData.characters;
+            case 'personas':
+                return personasRelacionesData.characters;
+            case 'verbos':
+                return verbosData.characters;
+            case 'sustantivos':
+                return sustantivosTiempoData.characters;
+            case 'frases':
+                return frasesHechasIData.characters;
+            case 'all':
+            default:
+                return allCharacters;
+        }
+    };
+
     useEffect(() => {
-        // Shuffle and select random characters
-        const shuffled = [...allCharacters].sort(() => Math.random() - 0.5).slice(0, 20);
+        // Shuffle and select random characters based on category
+        const categoryCharacters = getCharactersByCategory(selectedCategory);
+        const shuffled = [...categoryCharacters].sort(() => Math.random() - 0.5).slice(0, 20);
         setCharacters(shuffled);
         setCurrentIndex(0);
         setCompletedCount(0);
         setErrors(0);
         setInputValue('');
-    }, []);
+    }, [selectedCategory]);
 
     useEffect(() => {
         if (inputRef.current) {
@@ -583,7 +661,8 @@ const TypingMode = ({ allCharacters }) => {
             } else {
                 // Finished all characters
                 setTimeout(() => {
-                    const shuffled = [...allCharacters].sort(() => Math.random() - 0.5).slice(0, 20);
+                    const categoryCharacters = getCharactersByCategory(selectedCategory);
+                    const shuffled = [...categoryCharacters].sort(() => Math.random() - 0.5).slice(0, 20);
                     setCharacters(shuffled);
                     setCurrentIndex(0);
                     setCompletedCount(0);
@@ -600,7 +679,8 @@ const TypingMode = ({ allCharacters }) => {
     const handleKeyDown = (e) => {
         if (e.key === 'Escape') {
             // Reset
-            const shuffled = [...allCharacters].sort(() => Math.random() - 0.5).slice(0, 20);
+            const categoryCharacters = getCharactersByCategory(selectedCategory);
+            const shuffled = [...categoryCharacters].sort(() => Math.random() - 0.5).slice(0, 20);
             setCharacters(shuffled);
             setCurrentIndex(0);
             setCompletedCount(0);
@@ -628,6 +708,46 @@ const TypingMode = ({ allCharacters }) => {
                     <span>Teclea Seguido</span>
                     <span className="typing-title-hanzi">打字练习</span>
                 </h2>
+
+                <div className="flashcard-category-selector">
+                    <button
+                        className={`category-button ${selectedCategory === 'all' ? 'active' : ''}`}
+                        onClick={() => setSelectedCategory('all')}
+                    >
+                        Todas
+                    </button>
+                    <button
+                        className={`category-button ${selectedCategory === 'numeros' ? 'active' : ''}`}
+                        onClick={() => setSelectedCategory('numeros')}
+                    >
+                        Números Básicos
+                    </button>
+                    <button
+                        className={`category-button ${selectedCategory === 'personas' ? 'active' : ''}`}
+                        onClick={() => setSelectedCategory('personas')}
+                    >
+                        Personas y Relaciones
+                    </button>
+                    <button
+                        className={`category-button ${selectedCategory === 'verbos' ? 'active' : ''}`}
+                        onClick={() => setSelectedCategory('verbos')}
+                    >
+                        Verbos Comunes
+                    </button>
+                    <button
+                        className={`category-button ${selectedCategory === 'sustantivos' ? 'active' : ''}`}
+                        onClick={() => setSelectedCategory('sustantivos')}
+                    >
+                        Sustantivos y Tiempo
+                    </button>
+                    <button
+                        className={`category-button ${selectedCategory === 'frases' ? 'active' : ''}`}
+                        onClick={() => setSelectedCategory('frases')}
+                    >
+                        FRASES HECHAS I: Básicas I
+                    </button>
+                </div>
+
                 <div className="typing-stats">
                     <span className="stat">Completados: {completedCount}</span>
                     <span className="stat">Errores: {errors}</span>
@@ -645,27 +765,161 @@ const TypingMode = ({ allCharacters }) => {
                         <div className="typing-meaning">{char.meaning}</div>
                         <div className="typing-pinyin-target">{char.pinyin}</div>
                         {index === currentIndex && (
-                            <div className="typing-user-input">{inputValue}</div>
+                            <>
+                                <div className="typing-user-input">{inputValue}</div>
+                                <div className="typing-input-section">
+                                    <input
+                                        ref={inputRef}
+                                        type="text"
+                                        className={`typing-input ${isInputCorrect() === false ? 'error' : ''}`}
+                                        value={inputValue}
+                                        onChange={handleInputChange}
+                                        onKeyDown={handleKeyDown}
+                                        placeholder="Escribe el pinyin..."
+                                        autoComplete="off"
+                                        spellCheck="false"
+                                    />
+                                </div>
+                            </>
                         )}
                     </div>
                 ))}
             </div>
 
-            <div className="typing-input-section">
-                <input
-                    ref={inputRef}
-                    type="text"
-                    className={`typing-input ${isInputCorrect() === false ? 'error' : ''}`}
-                    value={inputValue}
-                    onChange={handleInputChange}
-                    onKeyDown={handleKeyDown}
-                    placeholder="Escribe el pinyin..."
-                    autoComplete="off"
-                    spellCheck="false"
-                />
-                <div className="typing-hint">
-                    Presiona <kbd>ESC</kbd> para reiniciar
+            <div className="typing-hint">
+                Presiona <kbd>ESC</kbd> para reiniciar
+            </div>
+        </div>
+    );
+};
+
+// Tone Practice Mode Component
+const TonePracticeMode = ({ allCharacters }) => {
+    const [characters, setCharacters] = useState([]);
+    const [revealedPinyin, setRevealedPinyin] = useState(new Set());
+    const [selectedCategory, setSelectedCategory] = useState('all');
+
+    // Get characters by category
+    const getCharactersByCategory = (category) => {
+        switch (category) {
+            case 'numeros':
+                return numerosBasicosData.characters;
+            case 'personas':
+                return personasRelacionesData.characters;
+            case 'verbos':
+                return verbosData.characters;
+            case 'sustantivos':
+                return sustantivosTiempoData.characters;
+            case 'frases':
+                return frasesHechasIData.characters;
+            case 'all':
+            default:
+                return allCharacters;
+        }
+    };
+
+    useEffect(() => {
+        // Shuffle and select random characters based on category
+        const categoryCharacters = getCharactersByCategory(selectedCategory);
+        const shuffled = [...categoryCharacters].sort(() => Math.random() - 0.5).slice(0, 20);
+        setCharacters(shuffled);
+        setRevealedPinyin(new Set());
+    }, [selectedCategory]);
+
+    const toggleRevealPinyin = (index) => {
+        setRevealedPinyin(prev => {
+            const newSet = new Set(prev);
+            if (newSet.has(index)) {
+                newSet.delete(index);
+            } else {
+                newSet.add(index);
+            }
+            return newSet;
+        });
+    };
+
+    const handleReset = () => {
+        const categoryCharacters = getCharactersByCategory(selectedCategory);
+        const shuffled = [...categoryCharacters].sort(() => Math.random() - 0.5).slice(0, 20);
+        setCharacters(shuffled);
+        setRevealedPinyin(new Set());
+    };
+
+    return (
+        <div className="typing-container">
+            <div className="typing-header">
+                <h2 className="typing-title">
+                    <span>Practicar Tonos 🎵</span>
+                    <span className="typing-title-hanzi">声调练习</span>
+                </h2>
+
+                <div className="flashcard-category-selector">
+                    <button
+                        className={`category-button ${selectedCategory === 'all' ? 'active' : ''}`}
+                        onClick={() => setSelectedCategory('all')}
+                    >
+                        Todas
+                    </button>
+                    <button
+                        className={`category-button ${selectedCategory === 'numeros' ? 'active' : ''}`}
+                        onClick={() => setSelectedCategory('numeros')}
+                    >
+                        Números Básicos
+                    </button>
+                    <button
+                        className={`category-button ${selectedCategory === 'personas' ? 'active' : ''}`}
+                        onClick={() => setSelectedCategory('personas')}
+                    >
+                        Personas y Relaciones
+                    </button>
+                    <button
+                        className={`category-button ${selectedCategory === 'verbos' ? 'active' : ''}`}
+                        onClick={() => setSelectedCategory('verbos')}
+                    >
+                        Verbos Comunes
+                    </button>
+                    <button
+                        className={`category-button ${selectedCategory === 'sustantivos' ? 'active' : ''}`}
+                        onClick={() => setSelectedCategory('sustantivos')}
+                    >
+                        Sustantivos y Tiempo
+                    </button>
+                    <button
+                        className={`category-button ${selectedCategory === 'frases' ? 'active' : ''}`}
+                        onClick={() => setSelectedCategory('frases')}
+                    >
+                        FRASES HECHAS I: Básicas I
+                    </button>
                 </div>
+
+                <div className="tone-reference">
+                    Tonos: <span className="tone-example">➖ (1º)</span> <span className="tone-example">↗️ (2º)</span> <span className="tone-example">🔁 (3º)</span> <span className="tone-example">↘️ (4º)</span> <span className="tone-example">· (neutro)</span>
+                </div>
+            </div>
+
+            <div className="typing-characters">
+                {characters.map((char, index) => (
+                    <div key={index} className="typing-char tone-practice-char">
+                        <div className="typing-hanzi">{char.hanzi}</div>
+                        <div className="typing-meaning">{char.meaning}</div>
+                        <div className="tone-emojis">{pinyinToToneEmojis(char.pinyin)}</div>
+                        <button
+                            className="reveal-pinyin-button"
+                            onClick={() => toggleRevealPinyin(index)}
+                        >
+                            {revealedPinyin.has(index) ? '🔒 Ocultar Pinyin' : '🔓 Mostrar Pinyin'}
+                        </button>
+                        {revealedPinyin.has(index) && (
+                            <div className="revealed-pinyin">{char.pinyin}</div>
+                        )}
+                    </div>
+                ))}
+            </div>
+
+            <div className="typing-hint">
+                <button className="nav-button reset-flashcard-button" onClick={handleReset}>
+                    Reiniciar
+                </button>
             </div>
         </div>
     );
@@ -689,6 +943,13 @@ const Tabs = ({ activeTab, onTabChange, score, total, showScore = true }) => {
                 >
                     <span className="tab-spanish">Modo Tarjetas</span>
                     <span className="tab-hanzi">学习模式</span>
+                </button>
+                <button
+                    className={`tab-button ${activeTab === 'tonePractice' ? 'active' : ''}`}
+                    onClick={() => onTabChange('tonePractice')}
+                >
+                    <span className="tab-spanish">Practicar Tonos 🎵</span>
+                    <span className="tab-hanzi">声调练习</span>
                 </button>
                 <button
                     className={`tab-button ${activeTab === 'numerosBasicos' ? 'active' : ''}`}
@@ -829,7 +1090,8 @@ const App = () => {
             ...numerosBasicosData.characters,
             ...personasRelacionesData.characters,
             ...verbosData.characters,
-            ...sustantivosTiempoData.characters
+            ...sustantivosTiempoData.characters,
+            ...frasesHechasIData.characters
         ];
     };
 
@@ -840,12 +1102,14 @@ const App = () => {
                 onTabChange={handleCharacterSetChange}
                 score={correctAnswers}
                 total={totalQuestions}
-                showScore={characterSet !== 'flashcards' && characterSet !== 'typing'}
+                showScore={characterSet !== 'flashcards' && characterSet !== 'typing' && characterSet !== 'tonePractice'}
             />
             {characterSet === 'typing' ? (
                 <TypingMode allCharacters={getAllCharacters()} />
             ) : characterSet === 'flashcards' ? (
                 <FlashcardMode allCharacters={getAllCharacters()} />
+            ) : characterSet === 'tonePractice' ? (
+                <TonePracticeMode allCharacters={getAllCharacters()} />
             ) : (
                 <>
                     <div className="container">
