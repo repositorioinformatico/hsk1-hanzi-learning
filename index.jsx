@@ -1001,7 +1001,6 @@ const FileUploadButton = ({ onWordsLoaded }) => {
             <input
                 ref={fileInputRef}
                 type="file"
-                accept=".txt"
                 onChange={handleFileUpload}
                 style={{ display: 'none' }}
             />
