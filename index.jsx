@@ -975,15 +975,15 @@ const FileUploadButton = ({ onWordsLoaded }) => {
             // Skip empty lines
             if (!line.trim()) continue;
 
-            // Split by multiple spaces or tabs
-            const parts = line.split(/\s{2,}|\t+/);
+            // Split by comma
+            const parts = line.split(',').map(p => p.trim());
 
             if (parts.length >= 4) {
-                // Format: Pinyin (simple)   Pinyin (con tonos)   Hanzi   Meaning
-                const pinyinSimple = parts[0].trim();
-                const pinyinWithTones = parts[1].trim();
-                const hanzi = parts[2].trim();
-                const meaning = parts[3].trim();
+                // Format: Pinyin (simple), Pinyin (con tonos), Hanzi, Meaning
+                const pinyinSimple = parts[0];
+                const pinyinWithTones = parts[1];
+                const hanzi = parts[2];
+                const meaning = parts[3];
 
                 words.push({
                     hanzi: hanzi,

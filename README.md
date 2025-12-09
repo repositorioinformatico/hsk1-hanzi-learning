@@ -94,14 +94,14 @@ Tiempo (天、年、月、日、今、明、昨、上、下), lugares (家、店
 
 ### 📝 Formato del archivo
 
-El archivo debe ser un `.txt` con el siguiente formato (campos separados por múltiples espacios o tabulaciones):
+El archivo debe ser un `.txt` con el siguiente formato (campos separados por comas):
 
 ```
-Pinyin (simple)   Pinyin (con tonos numéricos)   Caracteres chinos   Traducción al español
-a   a   啊   partícula modal
-a   a1   阿   partícula inicial
-Abalaqiya shanmai   A1ba1la1qi4ya4 shan1mai4   阿巴拉契亚山脉   Apalaches
-Agenting   A1gen1ting2   阿根廷   Argentina
+Pinyin simple,Pinyin con tonos,Hanzi,Traducción
+ca,ca1,擦,limpiar
+chen,che2n,尘,polvo
+cheng,che2ng,成,convertirse (en)
+Chen Yi,Che2n Yì,陈毅,Chen Yi
 ```
 
 **Nota**: Solo se utilizan las columnas 2 (Pinyin con tonos), 3 (Hanzi) y 4 (Traducción). La primera columna se ignora.
