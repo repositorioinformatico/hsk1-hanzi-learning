@@ -43,7 +43,8 @@ Este **no es un fork** del proyecto original porque:
 
 ## 🎯 Características Principales
 
-- **150 caracteres del HSK1** organizados en 4 categorías temáticas
+- **150+ caracteres del HSK1** organizados en 4 categorías temáticas
+- **📚 Palabras personalizadas** - Sube tus propios archivos .txt con vocabulario adicional
 - **Pinyin con tonos obligatorios** para práctica precisa de pronunciación
 - **Significados en español** siempre visibles para mejor comprensión
 - **Interfaz interactiva** con feedback instantáneo (verde para correcto, rojo para incorrecto)
@@ -81,6 +82,37 @@ Tiempo (天、年、月、日、今、明、昨、上、下), lugares (家、店
    - ❌ Rojo: respuesta incorrecta (puedes intentar de nuevo)
 6. **Navega con el teclado**: Presiona Enter para saltar a la siguiente tarjeta vacía o incorrecta
 7. **Reinicia en cualquier momento** con el botón "重置" en la esquina inferior derecha
+
+## 📚 Palabras Personalizadas
+
+¡Ahora puedes **subir tus propias palabras** para practicar! Esta funcionalidad te permite:
+
+- ✅ **Cargar archivos .txt** con vocabulario personalizado
+- ✅ **Persistencia automática** - Las palabras se guardan en tu navegador
+- ✅ **Integración completa** - Disponible en modo "Teclea Seguido" y "Practicar Tonos"
+- ✅ **Categoría dedicada** - Accede fácilmente a tus palabras desde el selector de categorías
+
+### 📝 Formato del archivo
+
+El archivo debe ser un `.txt` con el siguiente formato (campos separados por múltiples espacios o tabulaciones):
+
+```
+Pinyin (simple)   Pinyin (con tonos numéricos)   Caracteres chinos   Traducción al español
+a   a   啊   partícula modal
+a   a1   阿   partícula inicial
+Abalaqiya shanmai   A1ba1la1qi4ya4 shan1mai4   阿巴拉契亚山脉   Apalaches
+Agenting   A1gen1ting2   阿根廷   Argentina
+```
+
+**Nota**: Solo se utilizan las columnas 2 (Pinyin con tonos), 3 (Hanzi) y 4 (Traducción). La primera columna se ignora.
+
+### 🚀 Cómo usar
+
+1. Prepara tu archivo `.txt` con el formato indicado
+2. Haz clic en el botón **"📁 Subir Palabras Personalizadas"** (visible debajo de los tabs)
+3. Selecciona tu archivo
+4. ¡Listo! Tus palabras aparecerán en la categoría **"📚 Personalizados"**
+5. Las palabras se guardan automáticamente y permanecerán disponibles en futuras visitas
 
 ## 🔤 Sistema de Tonos
 

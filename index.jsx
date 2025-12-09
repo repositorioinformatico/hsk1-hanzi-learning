@@ -597,7 +597,7 @@ const FlashcardMode = ({ allCharacters }) => {
 };
 
 // Typing Mode Component (MonkeyType style)
-const TypingMode = ({ allCharacters }) => {
+const TypingMode = ({ allCharacters, customWords }) => {
     const [characters, setCharacters] = useState([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [inputValue, setInputValue] = useState('');
@@ -619,6 +619,8 @@ const TypingMode = ({ allCharacters }) => {
                 return sustantivosTiempoData.characters;
             case 'frases':
                 return frasesHechasIData.characters;
+            case 'personalizados':
+                return customWords;
             case 'all':
             default:
                 return allCharacters;
@@ -746,6 +748,14 @@ const TypingMode = ({ allCharacters }) => {
                     >
                         FRASES HECHAS I: Básicas I
                     </button>
+                    {customWords && customWords.length > 0 && (
+                        <button
+                            className={`category-button ${selectedCategory === 'personalizados' ? 'active' : ''}`}
+                            onClick={() => setSelectedCategory('personalizados')}
+                        >
+                            📚 Personalizados ({customWords.length})
+                        </button>
+                    )}
                 </div>
 
                 <div className="typing-stats">
@@ -794,7 +804,7 @@ const TypingMode = ({ allCharacters }) => {
 };
 
 // Tone Practice Mode Component
-const TonePracticeMode = ({ allCharacters }) => {
+const TonePracticeMode = ({ allCharacters, customWords }) => {
     const [characters, setCharacters] = useState([]);
     const [revealedPinyin, setRevealedPinyin] = useState(new Set());
     const [selectedCategory, setSelectedCategory] = useState('all');
@@ -812,6 +822,8 @@ const TonePracticeMode = ({ allCharacters }) => {
                 return sustantivosTiempoData.characters;
             case 'frases':
                 return frasesHechasIData.characters;
+            case 'personalizados':
+                return customWords;
             case 'all':
             default:
                 return allCharacters;
@@ -890,6 +902,14 @@ const TonePracticeMode = ({ allCharacters }) => {
                     >
                         FRASES HECHAS I: Básicas I
                     </button>
+                    {customWords && customWords.length > 0 && (
+                        <button
+                            className={`category-button ${selectedCategory === 'personalizados' ? 'active' : ''}`}
+                            onClick={() => setSelectedCategory('personalizados')}
+                        >
+                            📚 Personalizados ({customWords.length})
+                        </button>
+                    )}
                 </div>
 
                 <div className="tone-reference">
@@ -921,6 +941,76 @@ const TonePracticeMode = ({ allCharacters }) => {
                     Reiniciar
                 </button>
             </div>
+        </div>
+    );
+};
+
+// File Upload Component
+const FileUploadButton = ({ onWordsLoaded }) => {
+    const fileInputRef = useRef(null);
+
+    const handleFileUpload = (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const text = e.target.result;
+            const parsedWords = parseCustomWordsFile(text);
+            if (parsedWords.length > 0) {
+                onWordsLoaded(parsedWords);
+                alert(`✅ ${parsedWords.length} palabras cargadas correctamente`);
+            } else {
+                alert('❌ No se pudieron cargar las palabras. Verifica el formato del archivo.');
+            }
+        };
+        reader.readAsText(file);
+    };
+
+    const parseCustomWordsFile = (text) => {
+        const lines = text.trim().split('\n');
+        const words = [];
+
+        for (let line of lines) {
+            // Skip empty lines
+            if (!line.trim()) continue;
+
+            // Split by multiple spaces or tabs
+            const parts = line.split(/\s{2,}|\t+/);
+
+            if (parts.length >= 4) {
+                // Format: Pinyin (simple)   Pinyin (con tonos)   Hanzi   Meaning
+                const pinyinSimple = parts[0].trim();
+                const pinyinWithTones = parts[1].trim();
+                const hanzi = parts[2].trim();
+                const meaning = parts[3].trim();
+
+                words.push({
+                    hanzi: hanzi,
+                    pinyin: pinyinWithTones,
+                    meaning: meaning
+                });
+            }
+        }
+
+        return words;
+    };
+
+    return (
+        <div className="file-upload-container">
+            <input
+                ref={fileInputRef}
+                type="file"
+                accept=".txt"
+                onChange={handleFileUpload}
+                style={{ display: 'none' }}
+            />
+            <button
+                className="upload-button"
+                onClick={() => fileInputRef.current?.click()}
+            >
+                📁 Subir Palabras Personalizadas
+            </button>
         </div>
     );
 };
@@ -995,6 +1085,10 @@ const App = () => {
     const [shuffledCharacters, setShuffledCharacters] = useState([]);
     const [correctAnswers, setCorrectAnswers] = useState(0);
     const [showWinMessage, setShowWinMessage] = useState(false);
+    const [customWords, setCustomWords] = useState(() => {
+        const saved = localStorage.getItem('customWords');
+        return saved ? JSON.parse(saved) : [];
+    });
 
     const getCharacterData = () => {
         if (characterSet === 'numerosBasicos') return numerosBasicosData;
@@ -1084,6 +1178,12 @@ const App = () => {
         return () => document.removeEventListener('keydown', handleKeyDown);
     }, [correctAnswers]);
 
+    // Handle custom words loaded from file
+    const handleCustomWordsLoaded = (words) => {
+        setCustomWords(words);
+        localStorage.setItem('customWords', JSON.stringify(words));
+    };
+
     // Get all characters for flashcard mode
     const getAllCharacters = () => {
         return [
@@ -1091,7 +1191,8 @@ const App = () => {
             ...personasRelacionesData.characters,
             ...verbosData.characters,
             ...sustantivosTiempoData.characters,
-            ...frasesHechasIData.characters
+            ...frasesHechasIData.characters,
+            ...customWords
         ];
     };
 
@@ -1104,12 +1205,13 @@ const App = () => {
                 total={totalQuestions}
                 showScore={characterSet !== 'flashcards' && characterSet !== 'typing' && characterSet !== 'tonePractice'}
             />
+            <FileUploadButton onWordsLoaded={handleCustomWordsLoaded} />
             {characterSet === 'typing' ? (
-                <TypingMode allCharacters={getAllCharacters()} />
+                <TypingMode allCharacters={getAllCharacters()} customWords={customWords} />
             ) : characterSet === 'flashcards' ? (
                 <FlashcardMode allCharacters={getAllCharacters()} />
             ) : characterSet === 'tonePractice' ? (
-                <TonePracticeMode allCharacters={getAllCharacters()} />
+                <TonePracticeMode allCharacters={getAllCharacters()} customWords={customWords} />
             ) : (
                 <>
                     <div className="container">
