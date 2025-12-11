@@ -309,7 +309,7 @@ const CharacterCard = ({ charData, onAnswerCheck, characterSet }) => {
 };
 
 // Flashcard Mode Component
-const FlashcardMode = ({ allCharacters }) => {
+const FlashcardMode = ({ allCharacters, customWords }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [inputValue, setInputValue] = useState('');
     const [isCorrect, setIsCorrect] = useState(null);
@@ -330,6 +330,10 @@ const FlashcardMode = ({ allCharacters }) => {
                 return verbosData.characters;
             case 'sustantivos':
                 return sustantivosTiempoData.characters;
+            case 'frases':
+                return frasesHechasIData.characters;
+            case 'personalizados':
+                return customWords;
             case 'all':
             default:
                 return allCharacters;
@@ -494,6 +498,20 @@ const FlashcardMode = ({ allCharacters }) => {
                     >
                         Sustantivos
                     </button>
+                    <button
+                        className={`category-button ${selectedCategory === 'frases' ? 'active' : ''}`}
+                        onClick={() => handleCategoryChange('frases')}
+                    >
+                        Frases Básicas
+                    </button>
+                    {customWords && customWords.length > 0 && (
+                        <button
+                            className={`category-button ${selectedCategory === 'personalizados' ? 'active' : ''}`}
+                            onClick={() => handleCategoryChange('personalizados')}
+                        >
+                            📚 Personalizados ({customWords.length})
+                        </button>
+                    )}
                 </div>
 
                 <div className="flashcard-mode-toggle">
@@ -1284,7 +1302,7 @@ const App = () => {
             {characterSet === 'typing' ? (
                 <TypingMode allCharacters={getAllCharacters()} customWords={customWords} />
             ) : characterSet === 'flashcards' ? (
-                <FlashcardMode allCharacters={getAllCharacters()} />
+                <FlashcardMode allCharacters={getAllCharacters()} customWords={customWords} />
             ) : characterSet === 'tonePractice' ? (
                 <TonePracticeMode allCharacters={getAllCharacters()} customWords={customWords} />
             ) : (
