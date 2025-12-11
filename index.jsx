@@ -1010,6 +1010,13 @@ const FileUploadButton = ({ onWordsLoaded }) => {
             >
                 📁 Subir Palabras Personalizadas
             </button>
+            <a
+                href="plantilla-ejemplo-palabras-subidas.txt"
+                download="plantilla-ejemplo-palabras-subidas.txt"
+                className="template-download-link"
+            >
+                📥 Descárgate un ejemplo de fichero con palabras para que entiendas qué estructura tiene
+            </a>
         </div>
     );
 };
