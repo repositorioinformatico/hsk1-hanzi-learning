@@ -948,6 +948,8 @@ const TonePracticeMode = ({ allCharacters, customWords }) => {
 // File Upload Component
 const FileUploadButton = ({ onWordsLoaded }) => {
     const fileInputRef = useRef(null);
+    const [showTextInput, setShowTextInput] = useState(false);
+    const [textInput, setTextInput] = useState('');
 
     const handleFileUpload = (event) => {
         const file = event.target.files[0];
@@ -965,6 +967,23 @@ const FileUploadButton = ({ onWordsLoaded }) => {
             }
         };
         reader.readAsText(file);
+    };
+
+    const handleTextSubmit = () => {
+        if (!textInput.trim()) {
+            alert('❌ Por favor, pega el texto con las palabras');
+            return;
+        }
+
+        const parsedWords = parseCustomWordsFile(textInput);
+        if (parsedWords.length > 0) {
+            onWordsLoaded(parsedWords);
+            alert(`✅ ${parsedWords.length} palabras cargadas correctamente`);
+            setShowTextInput(false);
+            setTextInput('');
+        } else {
+            alert('❌ No se pudieron cargar las palabras. Verifica el formato del texto.');
+        }
     };
 
     const parseCustomWordsFile = (text) => {
@@ -998,18 +1017,68 @@ const FileUploadButton = ({ onWordsLoaded }) => {
 
     return (
         <div className="file-upload-container">
-            <input
-                ref={fileInputRef}
-                type="file"
-                onChange={handleFileUpload}
-                style={{ display: 'none' }}
-            />
-            <button
-                className="upload-button"
-                onClick={() => fileInputRef.current?.click()}
-            >
-                📁 Subir Palabras Personalizadas
-            </button>
+            <div className="upload-buttons-row">
+                <input
+                    ref={fileInputRef}
+                    type="file"
+                    onChange={handleFileUpload}
+                    style={{ display: 'none' }}
+                />
+                <button
+                    className="upload-button"
+                    onClick={() => fileInputRef.current?.click()}
+                >
+                    📁 Subir Palabras Personalizadas
+                </button>
+                <button
+                    className="upload-button paste-button"
+                    onClick={() => setShowTextInput(!showTextInput)}
+                >
+                    📝 Pegar Texto Directamente
+                </button>
+            </div>
+
+            {showTextInput && (
+                <div className="text-input-modal">
+                    <div className="text-input-header">
+                        <h3>Pega tus palabras en formato CSV</h3>
+                        <button
+                            className="close-button"
+                            onClick={() => {
+                                setShowTextInput(false);
+                                setTextInput('');
+                            }}
+                        >
+                            ✕
+                        </button>
+                    </div>
+                    <textarea
+                        className="text-input-area"
+                        placeholder="Pega aquí tu texto en formato CSV. Ejemplo:&#10;ni3 hao3,nǐ hǎo,你好,hola&#10;xie4 xie,xìe xiè,谢谢,gracias"
+                        value={textInput}
+                        onChange={(e) => setTextInput(e.target.value)}
+                        rows={12}
+                    />
+                    <div className="text-input-buttons">
+                        <button
+                            className="submit-text-button"
+                            onClick={handleTextSubmit}
+                        >
+                            ✅ Cargar Palabras
+                        </button>
+                        <button
+                            className="cancel-button"
+                            onClick={() => {
+                                setShowTextInput(false);
+                                setTextInput('');
+                            }}
+                        >
+                            ❌ Cancelar
+                        </button>
+                    </div>
+                </div>
+            )}
+
             <a
                 href="plantilla-ejemplo-palabras-subidas.txt"
                 download="plantilla-ejemplo-palabras-subidas.txt"
